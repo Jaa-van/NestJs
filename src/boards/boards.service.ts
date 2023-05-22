@@ -9,6 +9,11 @@ import { Board } from './board.entity';
 @Injectable()
 export class BoardsService {
   constructor(private boardRepository: BoardRepository) {}
+
+  getAllBoards(): Promise<Board[]> {
+    return this.boardRepository.getAllBoards();
+  }
+
   // getAllBoards(): Board[] {
   //   return this.boards;
   // }

@@ -9,6 +9,11 @@ export class BoardRepository extends Repository<Board> {
   constructor(@InjectRepository(Board) private dataSource: DataSource) {
     super(Board, dataSource.manager);
   }
+
+  async getAllBoards(): Promise<Board[]> {
+    return await this.find();
+  }
+
   async createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
     const { title, description } = createBoardDto;
 
