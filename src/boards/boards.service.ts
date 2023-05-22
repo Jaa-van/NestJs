@@ -29,17 +29,7 @@ export class BoardsService {
   //   return board;
   // }
   async getBoardById(id: number): Promise<Board> {
-    const found = await this.boardRepository.findOne({
-      where: {
-        id: id,
-      },
-    });
-
-    if (!found) {
-      throw new NotFoundException(`Can't find Board with id ${id}`);
-    }
-
-    return found;
+    return this.boardRepository.getBoardById(id);
   }
 
   // getBoardById(id: string): Board {
@@ -49,6 +39,10 @@ export class BoardsService {
   //   }
   //   return found;
   // }
+
+  deleteBoard(id: number): Promise<void> {
+    return this.boardRepository.deleteBoard(id);
+  }
   // deleteBoard(id: string): void {
   //   const found = this.getBoardById(id);
   //   this.boards = this.boards.filter((board) => board.id !== found.id);
@@ -58,4 +52,8 @@ export class BoardsService {
   //   board.status = status;
   //   return board;
   // }
+
+  updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
+    return this.boardRepository.updateBoardStatus(id, status);
+  }
 }
