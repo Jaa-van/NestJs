@@ -1,7 +1,7 @@
+import { JwtModule } from '@nestjs/jwt';
 import { AuthCredentialDto } from './dto/auth-credential.dto';
 import { UserRepository } from './user.repository';
 import { Injectable } from '@nestjs/common';
-
 @Injectable()
 export class AuthService {
   constructor(private userRepository: UserRepository) {}
@@ -10,7 +10,9 @@ export class AuthService {
     return this.userRepository.createUser(authCredentialDto);
   }
 
-  async signIn(authCredentialDto: AuthCredentialDto): Promise<string> {
+  async signIn(
+    authCredentialDto: AuthCredentialDto,
+  ): Promise<{ accessToken: string }> {
     const resultOfSignIn = await this.userRepository.signIn(authCredentialDto);
     return resultOfSignIn;
   }

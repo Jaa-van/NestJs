@@ -8,9 +8,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt/dist';
 
 export class UserRepository extends Repository<User> {
-  constructor(@InjectRepository(User) private dataSource: DataSource) {
+  constructor(
+    @InjectRepository(User) private dataSource: DataSource,
+    private jwtService: JwtService,
+  ) {
     super(User, dataSource.manager);
   }
 
@@ -32,12 +36,17 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  async signIn(authCredentialDto: AuthCredentialDto): Promise<string> {
+  async signIn(
+    authCredentialDto: AuthCredentialDto,
+  ): Promise<{ accessToken: string }> {
     const { username, password } = authCredentialDto;
     const user = await this.findOne({ where: { username } });
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      return 'login success';
+      const payload = { username };
+      const accessToken = await this.jwtService.sign(payload);
+
+      return { accessToken: accessToken };
     } else {
       throw new UnauthorizedException('login failed');
     }
