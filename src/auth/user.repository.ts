@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   ConflictException,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 
@@ -28,6 +29,17 @@ export class UserRepository extends Repository<User> {
       } else {
         throw new InternalServerErrorException();
       }
+    }
+  }
+
+  async signIn(authCredentialDto: AuthCredentialDto): Promise<string> {
+    const { username, password } = authCredentialDto;
+    const user = await this.findOne({ where: { username } });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      return 'login success';
+    } else {
+      throw new UnauthorizedException('login failed');
     }
   }
 }
